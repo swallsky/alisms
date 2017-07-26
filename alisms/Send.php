@@ -13,7 +13,7 @@ use Aliyun\Api\Sms\Request\V20170525\SendSmsRequest;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 //vendor path
-defined('VENDOR_PATH') or define('VENDOR_PATH',dirname(dirname(dirname(__DIR__))));
+defined('VENDOR_PATH') or define('VENDOR_PATH',dirname(dirname(dirname(dirname(__DIR__)))));
 
 // 加载区域结点配置
 Config::load();
@@ -33,6 +33,7 @@ class Send
         if(is_string($config)){//如果字符直接读取配置文件名
             $config = include(VENDOR_PATH.'/'.$config.'.php');
         }
+        $logdefile = VENDOR_PATH.'/logs/alisms-'.date('Y-m-d').'.log';
         return [
             'accessKeyId'   =>  $config['accessKeyId'], //阿里云 accesskey
             'accessKeySecret'  => $config['accessKeySecret'], //阿里云accesskeysecret
@@ -41,7 +42,7 @@ class Send
             'product'   =>  'Dysmsapi',
             'domain'    =>  'dysmsapi.aliyuncs.com',
             'region'    =>  'cn-hangzhou',
-            'logfile'   =>  VENDOR_PATH.'/logs/alisms-'.date('Y-m-d').'.log' //错误日志记录文件
+            'logfile'   =>  empty($config['logfile'])?$logdefile:$config['logfile'] //错误日志记录文件
         ];
     }
     /**
