@@ -35,6 +35,7 @@ if($res==0){
  * 短信配置信息
  */
 return [
+    'isopen'    =>  true,//默认为true,开启发送功能，如果为false时，发送会显示成功，但是并不发送短信，此参数在开发调试时较重要
     'accessKeyId'   =>  env('ALI_ACCESSKEY'), //阿里云Access ID
     'accessKeySecret'  => env('ALI_ACCESSKEYSECRET'), //阿里云Access Key
     'signName'  =>  env('ALI_SIGNNAME'), //短信签名
@@ -47,6 +48,43 @@ return [
 //require('../vendor/autoload.php'); //加载composer,一般情况下这个都是框架集成
 
 $res = SwaSky\Alisms\Send::verifyCode('手机号',mt_rand(1000,9999));
+if($res==0){
+    echo '发送失败!';
+}else{
+    echo '发送成功!';
+}
+```
+
+### 发送其他类型的短信
+默认配置文件在app/config/alisms.php,可以通过设置verifyCode第三个参数改变配置信息路径
+```alisms.php
+/**
+ * 短信配置信息
+ */
+return [
+    'isopen'    =>  true,//默认为true,开启发送功能，如果为false时，发送会显示成功，但是并不发送短信，此参数在开发调试时较重要
+    'accessKeyId'   =>  env('ALI_ACCESSKEY'), //阿里云Access ID
+    'accessKeySecret'  => env('ALI_ACCESSKEYSECRET'), //阿里云Access Key
+    'signName'  =>  env('ALI_SIGNNAME'), //短信签名
+    'templateCode'  =>  env('ALI_TEMPCODE'), //短信模板code
+    'logfile'   =>  storage_path('logs/alisms-'.date('Y-m-d').'.log') //日志保存目录
+];
+```
+
+```send.php
+//require('../vendor/autoload.php'); //加载composer,一般情况下这个都是框架集成
+
+use SwaSky\Alisms\Sms;
+
+$res = Sms::send(
+    '手机号码', //接收者手机号
+    [//发送的数据
+        'cname'     =>  '公司名称',
+        'password'  =>  mt_rand(100,999)
+    ],
+    'SMS_112780100' //短信模板 => 模版CODE
+);
+
 if($res==0){
     echo '发送失败!';
 }else{
